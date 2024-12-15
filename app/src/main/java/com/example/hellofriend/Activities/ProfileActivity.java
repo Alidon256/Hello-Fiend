@@ -165,7 +165,6 @@ public class ProfileActivity extends Fragment {
 
                     // Start the main activity with the generated profileId
                     Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.putExtra("userRole", "User");
                     intent.putExtra("profileId", userId);
                     intent.putExtra("name", userName.getText().toString());
                     intent.putExtra("profileImageUrl", imageUrl);

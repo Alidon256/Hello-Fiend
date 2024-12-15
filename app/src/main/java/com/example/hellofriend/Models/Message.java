@@ -1,21 +1,22 @@
 package com.example.hellofriend.Models;
-
 public class Message {
 
     private String text;
     private String userId;
     private String userName;
     private long timestamp;
+    private String recipientId;  // Add this field
 
     public Message() {
         // Default constructor required for calls to DataSnapshot.getValue(Message.class)
     }
 
-    public Message(String text, String userId, String userName, long timestamp) {
+    public Message(String text, String userId, String userName, long timestamp, String recipientId) {
         this.text = text;
         this.userId = userId;
         this.userName = userName;
         this.timestamp = timestamp;
+        this.recipientId = recipientId;  // Initialize recipientId
     }
 
     public String getText() {
@@ -49,4 +50,16 @@ public class Message {
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
+
+    // Getters and Setters
+    public String getRecipientId() {
+        return recipientId;
+    }
+
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
+    }
+
+    // Other getters and setters...
+
 }

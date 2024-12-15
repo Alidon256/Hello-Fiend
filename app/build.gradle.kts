@@ -44,12 +44,12 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     // Glide
-    implementation("com.github.bumptech.glide:glide:4.15.1")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     // ExoPlayer
-    implementation("com.google.android.exoplayer:exoplayer-core:2.18.7")
-    implementation("com.google.android.exoplayer:exoplayer-ui:2.18.7")
+    implementation("com.google.android.exoplayer:exoplayer-core:2.19.1")
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.19.1")
 
     // Firebase (Core and Common Libraries)
     implementation(platform("com.google.firebase:firebase-bom:32.2.3"))
@@ -59,7 +59,13 @@ dependencies {
     implementation("com.google.firebase:firebase-storage-ktx")
 
     // Picasso
-    implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.squareup.picasso:picasso:2.71828")
     //Image Picker
     implementation ("com.github.dhaval2404:imagepicker:2.1")
+
+    implementation ("androidx.room:room-runtime:2.6.1")
+    annotationProcessor ("androidx.room:room-compiler:2.6.1")
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
+    implementation ("com.google.firebase:firebase-firestore:25.1.1")
 }

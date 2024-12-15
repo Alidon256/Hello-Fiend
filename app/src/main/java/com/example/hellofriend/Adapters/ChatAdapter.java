@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hellofriend.Models.Message;
+import com.example.hellofriend.Models.Message1;
 import com.example.hellofriend.R;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     private ArrayList<Message> messageList;
 
-    public ChatAdapter(ArrayList<Message> messageList) {
+    public ChatAdapter(ArrayList<Message1> messageList) {
         this.messageList = messageList;
     }
 
