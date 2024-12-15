@@ -28,7 +28,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView chatRecyclerView;
     private ChatAdapter chatAdapter;
-    private ArrayList<Message1> messageList; // Changed to Message1
+    private ArrayList<Message1> messageList; // Updated to Message1
     private EditText editText;
     private ImageButton sendButton;
 

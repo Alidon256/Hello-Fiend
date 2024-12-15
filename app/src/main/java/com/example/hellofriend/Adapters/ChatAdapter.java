@@ -8,7 +8,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.hellofriend.Models.Message;
 import com.example.hellofriend.Models.Message1;
 import com.example.hellofriend.R;
 
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
-    private ArrayList<Message> messageList;
+    private ArrayList<Message1> messageList; // Updated to Message1
 
     public ChatAdapter(ArrayList<Message1> messageList) {
         this.messageList = messageList;
@@ -31,7 +30,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
-        Message message = messageList.get(position);
+        Message1 message = messageList.get(position); // Use Message1 here
         holder.messageTextView.setText(message.getText());
         holder.userNameTextView.setText(message.getUserName());
     }
@@ -53,4 +52,3 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         }
     }
 }
-

@@ -14,7 +14,7 @@ public class Message1 {
     private String text;         // Message Content
     private long timestamp;      // Time of Message
 
-    // Constructor
+    // Constructor to initialize a new message
     public Message1(String text, String userId, String recipientId, String userName, long timestamp) {
         this.text = text;
         this.userId = userId;
@@ -23,26 +23,56 @@ public class Message1 {
         this.timestamp = timestamp;
     }
 
+    // No-arg constructor required by Room
     public Message1() {
-
     }
 
-    // Getters and Setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // Getters and Setters for all fields
+    public int getId() {
+        return id;
+    }
 
-    public String getUserId() { return userId; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    public String getRecipientId() { return recipientId; }
-    public void setRecipientId(String recipientId) { this.recipientId = recipientId; }
+    public String getUserId() {
+        return userId;
+    }
 
-    public String getUserName() { return userName; }
-    public void setUserName(String userName) { this.userName = userName; }
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-    public String getText() { return text; }
-    public void setText(String text) { this.text = text; }
+    public String getRecipientId() {
+        return recipientId;
+    }
 
-    public long getTimestamp() { return timestamp; }
-    public void setTimestamp(long timestamp) { this.timestamp = timestamp; }
+    public void setRecipientId(String recipientId) {
+        this.recipientId = recipientId;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
 }

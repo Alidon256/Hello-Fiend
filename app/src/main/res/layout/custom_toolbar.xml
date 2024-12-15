@@ -5,9 +5,8 @@
     android:id="@+id/appBarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
+    android:background="@color/Teal"
     android:fitsSystemWindows="true"
-    android:theme="@style/Theme.Mindset"
     app:elevation="0dp">
 
     <androidx.appcompat.widget.Toolbar
@@ -15,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/actionBarSize"
-        app:popupTheme="@style/Theme.Mindset">
+        app:popupTheme="@style/Theme.AppCompat">
 
         <TextView
             android:id="@+id/tvTitle"
@@ -28,8 +27,8 @@
             android:lines="1"
             android:maxLines="1"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="Some Title" />
+            android:textSize="18sp"
+            tools:text="Hello Friend" />
 
         <ImageView
             android:id="@+id/ivCenter"
