@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <include
+        android:id="@+id/toolbarContainer"
+        layout="@layout/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbarContainer"
+        app:layout_constraintVertical_bias="0.0">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="50dp"
+            android:paddingBottom="50dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_name"
+                style="@style/user_login_tlEditText"
+                android:layout_marginTop="25dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/Al_Doctor" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etname"
+                    style="@style/user_login_editText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:hint="User Name" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_mail_adress"
+                style="@style/user_login_tlEditText"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_name" >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etemail"
+                    style="@style/user_login_editText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:hint="Email Address" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/Al_Doctor"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="9dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="20dp"
+                android:scaleType="centerCrop"
+                android:background="@color/Teal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/CircularShapeAppearance"
+                app:srcCompat="@drawable/ic_person" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_address"
+                android:layout_marginTop="16dp"
+                style="@style/user_login_editText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_mail_adress">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUserAdress"
+                    style="@style/user_login_editText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:hint="User Address" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/text_gender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Gender"
+                android:layout_marginTop="14sp"
+                android:textSize="20sp"
+                android:layout_marginStart="6sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_address"/>
+            <RadioGroup
+                android:id="@+id/radio_gender"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_gender">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/radioButtonMale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Male"
+                    android:value="Male" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/radioButtonFemale"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:text="Female"
+                    android:value="Female" />
+
+            </RadioGroup>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_contact"
+                android:layout_marginTop="16dp"
+                style="@style/user_login_editText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radio_gender">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUserContact"
+                    style="@style/user_login_editText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:hint="User Contact" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/user_dateOfBirth"
+                android:layout_marginTop="16dp"
+                style="@style/user_login_editText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_contact">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etUserDateOfBirth"
+                    style="@style/user_login_editText"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:hint="Date of Birth" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btnLogin_user"
+                style="@style/user_login_editText"
+                android:layout_height="50dp"
+                android:layout_marginTop="40dp"
+                android:background="@drawable/button_state_colors"
+                android:text="Get started"
+                android:textSize="18sp"
+                android:backgroundTint="@color/Teal"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/user_dateOfBirth" />
+
+            <ImageView
+                android:id="@+id/imageView11"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="4dp"
+                android:padding="8dp"
+                android:background="@drawable/camera_background"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/Al_Doctor"
+                app:layout_constraintEnd_toEndOf="@+id/Al_Doctor"
+                app:srcCompat="@drawable/ic_camera" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

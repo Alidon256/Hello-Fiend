@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1000901112007",
+    "project_id": "talkaboutit-3a742",
+    "storage_bucket": "talkaboutit-3a742.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000901112007:android:adf73caf825940eed08ee2",
+        "android_client_info": {
+          "package_name": "com.example.hellofriend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTQzYONIS6VGt9CE7J6c7dK4O_RTYBIFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1000901112007:android:2bb248778c5805c3d08ee2",
+        "android_client_info": {
+          "package_name": "com.example.talkaboutit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTQzYONIS6VGt9CE7J6c7dK4O_RTYBIFI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

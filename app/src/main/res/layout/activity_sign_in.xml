@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:paddingVertical="50dp">
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvSignUPNow"
+            style="@style/login_textView"
+            android:layout_marginTop="50dp"
+            android:text="SignUp Now"
+            android:textColor="@color/blue"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvMsg"
+            style="@style/login_textView"
+            android:layout_marginTop="5dp"
+            android:text="Please fill in the details and create account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSignUPNow" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlEmail"
+            style="@style/user_login_tlEditText"
+            android:layout_marginTop="32dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvMsg">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEmail"
+                style="@style/user_login_editText"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:hint="Email Adress" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlPassword"
+            style="@style/user_login_tlEditText"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="@id/tlEmail"
+            app:layout_constraintStart_toStartOf="@id/tlEmail"
+            app:layout_constraintTop_toBottomOf="@id/tlEmail"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etPass"
+                style="@style/user_login_editText"
+                android:imeOptions="actionNext"
+                android:inputType="textPassword"
+                android:hint="Password" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tlConfirmPass"
+            style="@style/user_login_tlEditText"
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tlPassword">
+
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/nameEditText"
+                style="@style/user_login_editText"
+                android:inputType="textPersonName"
+                android:hint="Name"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btnSignUp"
+            style="@style/user_login_editText"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/Teal"
+            android:text="Sign Up"
+            android:padding="14dp"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tlConfirmPass" />
+        <Button
+            android:id="@+id/btn_google"
+            style="@style/user_login_editText"
+            android:layout_marginTop="10dp"
+            android:backgroundTint="@color/white"
+            android:drawableLeft="@drawable/ic_google1"
+            android:elevation="8dp"
+            android:padding="14dp"
+            android:text="SignUp with Google"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnSignUp"/>
+
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvBottomMsg"
+            style="@style/login_textView"
+            android:layout_marginTop="20dp"
+            android:text="Do you have an account?"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/tvLogIn"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_google" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvLogIn"
+            style="@style/login_textView"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="20dp"
+            android:text="LogIn"
+            android:textColor="@color/blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvBottomMsg"
+            app:layout_constraintTop_toBottomOf="@+id/btn_google" />
+
+        <TextView
+            android:id="@+id/textView18"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Hello Friend"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tvSignUPNow"
+            app:layout_constraintEnd_toEndOf="@+id/tvSignUPNow"
+            app:layout_constraintStart_toStartOf="@+id/tvSignUPNow"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
