@@ -6,6 +6,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -51,7 +53,7 @@ public class ChatActivity extends AppCompatActivity {
         userName = getIntent().getStringExtra("userName");
 
         chatRecyclerView = findViewById(R.id.chat_recycler);
-        editText = findViewById(R.id.editText);
+        editText = findViewById(R.id.editT);
         sendButton = findViewById(R.id.send_message);
 
         mAuth = FirebaseAuth.getInstance();
@@ -78,13 +80,10 @@ public class ChatActivity extends AppCompatActivity {
     private void loadMessages() {
         // Load messages from Room Database
         LiveData<List<Message1>> liveMessages = messageDao.getChatMessages(currentUserId, userId);
-        liveMessages.observe(this, new Observer<List<Message1>>() {
-            @Override
-            public void onChanged(List<Message1> messages) {
-                messageList.clear();
-                messageList.addAll(messages);
-                chatAdapter.notifyDataSetChanged();
-            }
+        liveMessages.observe(this, messages -> {
+            messageList.clear();
+            messageList.addAll(messages);
+            chatAdapter.notifyDataSetChanged();
         });
 
         // Sync messages with Firestore if network is available
@@ -98,19 +97,18 @@ public class ChatActivity extends AppCompatActivity {
                 .whereEqualTo("userId", currentUserId)
                 .whereEqualTo("recipientId", userId)
                 .get()
-                .addOnSuccessListener(querySnapshot -> {
+                .addOnSuccessListener(querySnapshot -> Executors.newSingleThreadExecutor().execute(() -> {
                     for (var doc : querySnapshot.getDocuments()) {
-                        // Assuming the document contains the required fields
                         Message1 message = doc.toObject(Message1.class);
 
                         if (message != null) {
-                            // Ensure message fields are correctly populated
+                            // Insert message into Room database if it does not already exist
                             messageDao.insertMessage(message);
                         }
                     }
-                })
+                }))
                 .addOnFailureListener(e -> {
-                    // Handle any error in fetching Firestore data
+                    Toast.makeText(this, "Failed to sync messages", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -127,8 +125,8 @@ public class ChatActivity extends AppCompatActivity {
             message.setUserName(currentUserName);
             message.setTimestamp(System.currentTimeMillis());
 
-            // Insert into Room Database
-            messageDao.insertMessage(message);
+            // Insert into Room Database on a background thread
+            Executors.newSingleThreadExecutor().execute(() -> messageDao.insertMessage(message));
 
             // Sync with Firestore if network is available
             if (isNetworkAvailable()) {
@@ -143,6 +141,8 @@ public class ChatActivity extends AppCompatActivity {
             }
 
             editText.setText(""); // Clear the input field
+        } else {
+            Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show();
         }
     }
 

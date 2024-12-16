@@ -5,13 +5,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.hellofriend.MainActivity;
 import com.example.hellofriend.Models.User;
 import com.example.hellofriend.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,17 +22,25 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private EditText emailEditText, passwordEditText, nameEditText;
-    private RadioGroup roleRadioGroup;
     private Button registerButton;
     private TextView loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check if the user is already signed in
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            // User is already signed in, navigate to MainActivity
+            navigateToMainActivity();
+            return;
+        }
+
         setContentView(R.layout.activity_sign_in);
 
         // Initialize Firebase
-        mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         // Bind UI elements
@@ -58,15 +65,6 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
-        int selectedRoleId = roleRadioGroup.getCheckedRadioButtonId();
-        if (selectedRoleId == -1) {
-            Toast.makeText(this, "Please select a role", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        RadioButton selectedRoleButton = findViewById(selectedRoleId);
-        String role = selectedRoleButton.getText().toString();
-
         // Register user with Firebase Authentication
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
@@ -74,13 +72,15 @@ public class SignInActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
                             String userId = user.getUid();
-                            User newUser = new User(userId, name, email, role);
+                            User newUser = new User(userId, name, email);
 
                             // Save user data to Firestore
-                            db.collection(role.equals("Doctor") ? "Doctors" : "Users").document(userId).set(newUser)
+                            db.collection("Users")
+                                    .document(userId)
+                                    .set(newUser)
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(this, "User Registered", Toast.LENGTH_SHORT).show();
-                                        navigateBasedOnRole(role);  // Navigate based on role
+                                        navigateToMainActivity();
                                     })
                                     .addOnFailureListener(e -> {
                                         Log.e("SignUpActivity", "Error registering user", e);
@@ -92,13 +92,6 @@ public class SignInActivity extends AppCompatActivity {
                         Toast.makeText(this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    private void navigateBasedOnRole(String role) {
-        Intent intent = new Intent(SignInActivity.this, ProfileActivity.class);
-        intent.putExtra("userRole", role);
-        startActivity(intent);
-        finish();
     }
 
     private void loginUser() {
@@ -120,7 +113,7 @@ public class SignInActivity extends AppCompatActivity {
                                     .addOnSuccessListener(documentSnapshot -> {
                                         User userData = documentSnapshot.toObject(User.class);
                                         if (userData != null) {
-                                            navigateBasedOnRole(userData.getRole());
+                                            navigateToMainActivity();
                                         }
                                     });
                         }
@@ -129,5 +122,11 @@ public class SignInActivity extends AppCompatActivity {
                         Toast.makeText(this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish(); // Prevent user from coming back to the sign-in screen
     }
 }

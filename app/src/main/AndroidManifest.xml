@@ -22,13 +22,13 @@
             android:name=".Activities.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".Activities.SignInActivity"
+            android:name=".MainActivity"
             android:exported="false" />
         <activity
             android:name=".Activities.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
