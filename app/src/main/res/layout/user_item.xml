@@ -3,7 +3,10 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
+    android:paddingStart="8dp"
+    android:paddingEnd="16dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/userImage"
@@ -13,12 +16,49 @@
         app:shapeAppearanceOverlay="@style/CircularShapeAppearance"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_me" />
-
+<LinearLayout
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="1"
+    android:orientation="vertical">
     <TextView
         android:id="@+id/userName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="User Name"
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold"
+        android:text="Nyesigire Shimon"
         android:textSize="16sp" />
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="How are you doing Bro ?"
+        android:textSize="16sp" />
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="12:00"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/Teal"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="online"
+            android:textColor="@color/Teal"
+            android:textSize="16sp" />
+    </LinearLayout>
+
 </LinearLayout>

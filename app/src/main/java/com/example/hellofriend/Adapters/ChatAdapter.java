@@ -7,9 +7,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.hellofriend.Models.Message1;
 import com.example.hellofriend.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -31,8 +31,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
     @Override
     public void onBindViewHolder(@NonNull ChatViewHolder holder, int position) {
         Message1 message = messageList.get(position); // Use Message1 here
+
         holder.messageTextView.setText(message.getText());
-        holder.userNameTextView.setText(message.getUserName());
+       // holder.userNameTextView.setText(message.getUserName());
     }
 
     @Override

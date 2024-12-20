@@ -2,6 +2,7 @@ package com.example.hellofriend.Adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +13,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.hellofriend.Activities.ChatActivity;
+import com.example.hellofriend.MainActivity;
 import com.example.hellofriend.Models.User1;
 import com.example.hellofriend.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context context;
     private List<User1> userList;
@@ -37,15 +38,29 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         User1 user = userList.get(position);
-        holder.userName.setText(user.getName());
-        Picasso.get().load(user.getProfileImageUrl()).placeholder(R.drawable.ic_me).into(holder.userImage);
+
+        // Set user name
+        holder.userName.setText(user.getName() != null ? user.getName() : "Unknown User");
+
+        if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
+            Picasso.get()
+                    .load(user.getProfileImageUrl())
+                    .placeholder(R.drawable.ic_me)
+                    .error(R.drawable.ic_me)
+                    .into(holder.userImage);
+        } else {
+            holder.userImage.setImageResource(R.drawable.ic_me);
+        }
 
         // Set click listener
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("userId", user.getUserId());
-            intent.putExtra("userName", user.getName());
+            intent.putExtra("name", user.getName());
+            intent.putExtra("recipientImageUrl", user.getProfileImageUrl());
             context.startActivity(intent);
+            Log.d("UserAdapter", "User clicked: " + user.getName());
+            Log.d("UserAdapter", "User ID: " + user.getUserId());
         });
     }
 

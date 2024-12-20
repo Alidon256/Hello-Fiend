@@ -1,41 +1,27 @@
 package com.example.hellofriend.Models;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import com.google.firebase.Timestamp;
 
-@Entity(tableName = "messages")
 public class Message1 {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
 
-    private String userId;       // Sender ID
-    private String recipientId;  // Receiver ID
-    private String userName;     // Sender Name
-    private String text;         // Message Content
-    private long timestamp;      // Time of Message
+    private String userId;
+    private String recipientId;
+    private String userName;
+    private String text;
+    private Timestamp firestoreTimestamp;
 
-    // Constructor to initialize a new message
-    public Message1(String text, String userId, String recipientId, String userName, long timestamp) {
+    public Message1() {
+    }
+
+    public Message1(String text, String userId, String recipientId, String userName, Timestamp firestoreTimestamp) {
         this.text = text;
         this.userId = userId;
         this.recipientId = recipientId;
         this.userName = userName;
-        this.timestamp = timestamp;
+        this.firestoreTimestamp = firestoreTimestamp;
     }
 
-    // No-arg constructor required by Room
-    public Message1() {
-    }
-
-    // Getters and Setters for all fields
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    // Getters and Setters
     public String getUserId() {
         return userId;
     }
@@ -68,11 +54,11 @@ public class Message1 {
         this.text = text;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public Timestamp getFirestoreTimestamp() {
+        return firestoreTimestamp;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setFirestoreTimestamp(Timestamp firestoreTimestamp) {
+        this.firestoreTimestamp = firestoreTimestamp;
     }
 }

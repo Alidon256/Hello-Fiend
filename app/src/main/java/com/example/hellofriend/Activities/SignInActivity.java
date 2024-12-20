@@ -80,7 +80,7 @@ public class SignInActivity extends AppCompatActivity {
                                     .set(newUser)
                                     .addOnSuccessListener(aVoid -> {
                                         Toast.makeText(this, "User Registered", Toast.LENGTH_SHORT).show();
-                                        navigateToMainActivity();
+                                        navigateToProfileActivity();
                                     })
                                     .addOnFailureListener(e -> {
                                         Log.e("SignUpActivity", "Error registering user", e);
@@ -92,6 +92,12 @@ public class SignInActivity extends AppCompatActivity {
                         Toast.makeText(this, "Registration Failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void navigateToProfileActivity() {
+        Intent intent = new Intent(SignInActivity.this, ProfileActivity.class);
+        startActivity(intent);
+        finish(); // Prevent user from coming back to the sign-in screen
     }
 
     private void loginUser() {

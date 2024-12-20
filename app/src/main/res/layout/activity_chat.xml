@@ -4,6 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/light_gray_bot"
     android:layout_height="match_parent"
     tools:context=".Activities.ChatActivity">
 
@@ -24,6 +25,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:background="@color/white"
+        android:layout_marginEnd="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/send_message"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,14 +34,12 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editT"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/back_search"
-            android:drawableLeft="@drawable/ic_emoji"
-            android:drawableRight="@drawable/ic_camera"
+           style="@style/ai_back"
+            android:drawableStart="@drawable/ic_emoji"
+            android:drawableEnd="@drawable/ic_attach"
             android:hint="Message"
             android:padding="12dp"
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <ImageButton
@@ -46,9 +47,9 @@
         android:layout_margin="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/circular_button"
+        android:background="@drawable/circular_button_teal"
         android:contentDescription="Send"
-        android:src="@drawable/ic_arrow_forward"
+        android:src="@drawable/ic_arrow_forward_white"
         app:layout_constraintTop_toBottomOf="@id/chat_recycler"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
