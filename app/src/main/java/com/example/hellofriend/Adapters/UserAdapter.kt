@@ -1,82 +1,71 @@
-package com.example.hellofriend.Adapters;
+package com.example.hellofriend.Adapters
 
-import android.content.Context;
-import android.content.Intent;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.example.hellofriend.Activities.ChatActivity
+import com.example.hellofriend.Models.User1
+import com.example.hellofriend.R
+import com.squareup.picasso.Picasso
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
+class UserAdapter(context: Context, userList: MutableList<User1>?) :
+    RecyclerView.Adapter<UserAdapter.ViewHolder?>() {
+    private val context: Context
+    private val userList: MutableList<User1>?
 
-import com.example.hellofriend.Activities.ChatActivity;
-import com.example.hellofriend.MainActivity;
-import com.example.hellofriend.Models.User1;
-import com.example.hellofriend.R;
-import com.squareup.picasso.Picasso;
-
-import java.util.List;
-public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
-    private Context context;
-    private List<User1> userList;
-
-    public UserAdapter(Context context, List<User1> userList) {
-        this.context = context;
-        this.userList = userList;
+    init {
+        requireNotNull(context) { "Context cannot be null in UserAdapter" }
+        this.context = context
+        this.userList = userList
     }
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.user_item, parent, false);
-        return new ViewHolder(view);
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.user_item, parent, false)
+        return ViewHolder(view)
     }
 
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        User1 user = userList.get(position);
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val user = userList!![position]
 
         // Set user name
-        holder.userName.setText(user.getName() != null ? user.getName() : "Unknown User");
+        holder.userName.text = if (user.name != null) user.name else "Unknown User"
 
-        if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
+        // Load user image with Picasso
+        if (user.profileImageUrl != null && !user.profileImageUrl.isEmpty()) {
             Picasso.get()
-                    .load(user.getProfileImageUrl())
-                    .placeholder(R.drawable.ic_me)
-                    .error(R.drawable.ic_me)
-                    .into(holder.userImage);
+                .load(user.profileImageUrl)
+                .placeholder(R.drawable.ic_me)
+                .error(R.drawable.ic_me)
+                .into(holder.userImage)
         } else {
-            holder.userImage.setImageResource(R.drawable.ic_me);
+            holder.userImage.setImageResource(R.drawable.ic_me)
         }
 
         // Set click listener
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ChatActivity.class);
-            intent.putExtra("userId", user.getUserId());
-            intent.putExtra("name", user.getName());
-            intent.putExtra("recipientImageUrl", user.getProfileImageUrl());
-            context.startActivity(intent);
-            Log.d("UserAdapter", "User clicked: " + user.getName());
-            Log.d("UserAdapter", "User ID: " + user.getUserId());
-        });
+        holder.itemView.setOnClickListener(View.OnClickListener { v: View? ->
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtra("userId", user.userId)
+            intent.putExtra("name", user.name)
+            intent.putExtra("recipientImageUrl", user.profileImageUrl)
+            context.startActivity(intent)
+
+            Log.d("UserAdapter", "User clicked: " + user.name)
+            Log.d("UserAdapter", "User ID: " + user.userId)
+        })
     }
 
-    @Override
-    public int getItemCount() {
-        return userList.size();
+    override fun getItemCount(): Int {
+        return if (userList != null) userList.size else 0
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView userName;
-        ImageView userImage;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            userName = itemView.findViewById(R.id.userName);
-            userImage = itemView.findViewById(R.id.userImage);
-        }
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var userName: TextView = itemView.findViewById<TextView>(R.id.userName)
+        var userImage: ImageView = itemView.findViewById<ImageView>(R.id.userImage)
     }
 }

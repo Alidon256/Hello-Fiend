@@ -1,65 +1,66 @@
-package com.example.hellofriend.Models;
-public class Message {
+package com.example.hellofriend.Models
 
-    private String text;
-    private String userId;
-    private String userName;
-    private long timestamp;
-    private String recipientId;  // Add this field
+class Message {
+    private var text: String? = null
+    private var userId: String? = null
+    private var userName: String? = null
+    private var timestamp: Long = 0
+    private var recipientId: String? = null // Add this field
 
-    public Message() {
-        // Default constructor required for calls to DataSnapshot.getValue(Message.class)
+    constructor()
+
+    constructor(
+        text: String?,
+        userId: String?,
+        userName: String?,
+        timestamp: Long,
+        recipientId: String?
+    ) {
+        this.text = text
+        this.userId = userId
+        this.userName = userName
+        this.timestamp = timestamp
+        this.recipientId = recipientId // Initialize recipientId
     }
 
-    public Message(String text, String userId, String userName, long timestamp, String recipientId) {
-        this.text = text;
-        this.userId = userId;
-        this.userName = userName;
-        this.timestamp = timestamp;
-        this.recipientId = recipientId;  // Initialize recipientId
+    fun getText(): String? {
+        return text
     }
 
-    public String getText() {
-        return text;
+    fun setText(text: String?) {
+        this.text = text
     }
 
-    public void setText(String text) {
-        this.text = text;
+    fun getUserId(): String? {
+        return userId
     }
 
-    public String getUserId() {
-        return userId;
+    fun setUserId(userId: String?) {
+        this.userId = userId
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    fun getUserName(): String? {
+        return userName
     }
 
-    public String getUserName() {
-        return userName;
+    fun setUserName(userName: String?) {
+        this.userName = userName
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    fun getTimestamp(): Long {
+        return timestamp
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    fun setTimestamp(timestamp: Long) {
+        this.timestamp = timestamp
     }
 
     // Getters and Setters
-    public String getRecipientId() {
-        return recipientId;
+    fun getRecipientId(): String? {
+        return recipientId
     }
 
-    public void setRecipientId(String recipientId) {
-        this.recipientId = recipientId;
-    }
-
-    // Other getters and setters...
-
+    fun setRecipientId(recipientId: String?) {
+        this.recipientId = recipientId
+    } // Other getters and setters...
 }

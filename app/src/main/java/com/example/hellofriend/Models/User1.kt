@@ -1,82 +1,112 @@
-package com.example.hellofriend.Models;
+package com.example.hellofriend.Models
 
-public class User1 {
-        private String userId;
-        private String name;
-        private String email;
-        private String contact;
-        private String gender;
-        private String address;
-        private String dateOfBirth;
-        private String userRole;
-        private String profileImageUrl;
+class User1 {
+    private var userId: String? = null
+    private var name: String? = null
+    private var email: String? = null
+    private var contact: String? = null
+    private var gender: String? = null
+    private var address: String? = null
+    private var dateOfBirth: String? = null
+    private var userRole: String? = null
+    private var profileImageUrl: String? = null
 
-        public User1() {} // Empty constructor for Firestore
+    constructor() // Empty constructor for Firestore
 
 
-    public User1(String userId, String name, String email, String contact, String gender, String address, String dateOfBirth, String userRole, String profileImageUrl) {
-        this.userId = userId;
-        this.name = name;
-        this.email = email;
-        this.contact = contact;
-        this.gender = gender;
-        this.address = address;
-        this.dateOfBirth = dateOfBirth;
-        this.userRole = userRole;
-        this.profileImageUrl = profileImageUrl;
+    constructor(
+        userId: String?,
+        name: String?,
+        email: String?,
+        contact: String?,
+        gender: String?,
+        address: String?,
+        dateOfBirth: String?,
+        userRole: String?,
+        profileImageUrl: String?
+    ) {
+        this.userId = userId
+        this.name = name
+        this.email = email
+        this.contact = contact
+        this.gender = gender
+        this.address = address
+        this.dateOfBirth = dateOfBirth
+        this.userRole = userRole
+        this.profileImageUrl = profileImageUrl
     }
 
     // Getters and setters
-        public String getUserId() { return userId; }
-        public void setUserId(String userId) { this.userId = userId; }
-
-        public String getName() { return name; }
-        public void setName(String name) { this.name = name; }
-
-        public String getEmail() { return email; }
-        public void setEmail(String email) { this.email = email; }
-
-        public String getProfileImageUrl() { return profileImageUrl; }
-        public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
-
-    public String getContact() {
-        return contact;
+    fun getUserId(): String? {
+        return userId
     }
 
-    public void setContact(String contact) {
-        this.contact = contact;
+    fun setUserId(userId: String?) {
+        this.userId = userId
     }
 
-    public String getGender() {
-        return gender;
+    fun getName(): String? {
+        return name
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    fun setName(name: String?) {
+        this.name = name
     }
 
-    public String getAddress() {
-        return address;
+    fun getEmail(): String? {
+        return email
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    fun setEmail(email: String?) {
+        this.email = email
     }
 
-    public String getDateOfBirth() {
-        return dateOfBirth;
+    fun getProfileImageUrl(): String? {
+        return profileImageUrl
     }
 
-    public void setDateOfBirth(String dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
+    fun setProfileImageUrl(profileImageUrl: String?) {
+        this.profileImageUrl = profileImageUrl
     }
 
-    public String getUserRole() {
-        return userRole;
+    fun getContact(): String? {
+        return contact
     }
 
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
+    fun setContact(contact: String?) {
+        this.contact = contact
+    }
+
+    fun getGender(): String? {
+        return gender
+    }
+
+    fun setGender(gender: String?) {
+        this.gender = gender
+    }
+
+    fun getAddress(): String? {
+        return address
+    }
+
+    fun setAddress(address: String?) {
+        this.address = address
+    }
+
+    fun getDateOfBirth(): String? {
+        return dateOfBirth
+    }
+
+    fun setDateOfBirth(dateOfBirth: String?) {
+        this.dateOfBirth = dateOfBirth
+    }
+
+    fun getUserRole(): String? {
+        return userRole
+    }
+
+    fun setUserRole(userRole: String?) {
+        this.userRole = userRole
     }
 }
 

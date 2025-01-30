@@ -1,200 +1,180 @@
-package com.example.hellofriend.Activities;
+package com.example.hellofriend.Activities
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.content.Intent
+import com.google.firebase.Timestamp
+import android.os.Bundle
+import android.view.View
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.hellofriend.Adapters.ChatAdapter
+import com.example.hellofriend.MainActivity
+import com.example.hellofriend.Models.Message1
+import com.example.hellofriend.R
+import com.example.hellofriend.ViewModel.ChatViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
+import java.util.ArrayList
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class ChatActivity : AppCompatActivity() {
+    private var chatRecyclerView: RecyclerView? = null
+    private var chatAdapter: ChatAdapter? = null
+    private var messageList: MutableList<Message1?>? = null
+    private var editText: EditText? = null
+    private var sendButton: ImageButton? = null
+    private var backBtn: ImageView? = null
+    private var imageUser: ImageView? = null
+    private var phoneCall: ImageView? = null
+    private var videoCall: ImageView? = null
+    private var recipientName: TextView? = null
 
-import com.example.hellofriend.Adapters.ChatAdapter;
-import com.example.hellofriend.MainActivity;
-import com.example.hellofriend.Models.Message1;
-import com.example.hellofriend.Models.User;
-import com.example.hellofriend.Models.User1;
-import com.example.hellofriend.R;
-import com.example.hellofriend.ViewModel.ChatViewModel;
-import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.squareup.picasso.Picasso;
+    private var mAuth: FirebaseAuth? = null
+    private var currentUserId: String? = null
+    private var userId: String? = null
+    private var userName: String? = null
+    private var recipientImageUrl: String? = null
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+    private var chatViewModel: ChatViewModel? = null
 
-public class ChatActivity extends AppCompatActivity {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_chat)
 
-    private RecyclerView chatRecyclerView;
-    private ChatAdapter chatAdapter;
-    private List<Message1> messageList;
-    private EditText editText;
-    private ImageButton sendButton;
-    private ImageView backBtn, imageUser, phoneCall, videoCall;
-    private TextView recipientName;
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance()
+        if (mAuth!!.currentUser == null) {
+            Toast.makeText(this, "User is not logged in", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        currentUserId = mAuth!!.currentUser!!.uid
 
-    private FirebaseAuth mAuth;
-    private String currentUserId;
-    private String userId;
-    private String userName;
-    private String recipientImageUrl;
+        // Get intent data
+        userId = intent.getStringExtra("userId")
+        userName = intent.getStringExtra("name")
+        recipientImageUrl = intent.getStringExtra("recipientImageUrl")
 
-    private ChatViewModel chatViewModel;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-
-        // Get user details from intent
-        userId = getIntent().getStringExtra("userId");
-        userName = getIntent().getStringExtra("name");
-        recipientImageUrl = getIntent().getStringExtra("recipientImageUrl");
-
-        Log.d("ChatActivity", "User Name " + userName);
-        System.out.println("ChatActivity" + "User Name " +userName);
-        // Validate required data
         if (userId == null || userName == null) {
-            Toast.makeText(this, "Chat recipient information is missing", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
+            Toast.makeText(this, "Chat recipient information is missing", Toast.LENGTH_SHORT).show()
+            finish()
+            return
         }
 
         // Initialize views
-        chatRecyclerView = findViewById(R.id.chat_recycler);
-        editText = findViewById(R.id.editT);
-        sendButton = findViewById(R.id.send_message);
-        backBtn = findViewById(R.id.icon_right);
-        recipientName = findViewById(R.id.name_chat);
-        imageUser = findViewById(R.id.image_user);
-        phoneCall = findViewById(R.id.phone_call);
-        videoCall = findViewById(R.id.video_call);
-
-        // Firebase Authentication
-        mAuth = FirebaseAuth.getInstance();
-        if (mAuth.getCurrentUser() == null) {
-            Toast.makeText(this, "User is not logged in", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-        currentUserId = mAuth.getCurrentUser().getUid();
-
-        // Set up RecyclerView
-        messageList = new ArrayList<>();
-        chatAdapter = new ChatAdapter((ArrayList<Message1>) messageList);
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        chatRecyclerView.setAdapter(chatAdapter);
-
-        setTitle("Chat with " + userName);
-
-        // Initialize Chat ViewModel
-        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
-
-        //Observe messages from ViewModel in real-time
-       //chatViewModel.loadMessagesRealTime(currentUserId, userId);
-        chatViewModel.getMessagesLiveData(currentUserId, userId).observe(this, messages -> {
-            messageList.clear();
-            if (messages != null) {
-                messageList.addAll(messages);
-            }
-            chatAdapter.notifyDataSetChanged();
-            chatRecyclerView.scrollToPosition(messageList.size() - 1);
-        });
+        initializeViews()
 
         // Set recipient info
-        recipientName.setText(userName != null ? userName : "Unknown User");
-        if (recipientImageUrl != null && !recipientImageUrl.isEmpty()) {
+        setUpRecipientDetails()
+
+        // Set up RecyclerView
+        setUpRecyclerView()
+
+        // Initialize ViewModel
+        initializeViewModel()
+
+        // Set up button listeners
+        setUpListeners()
+    }
+
+    private fun initializeViews() {
+        chatRecyclerView = findViewById<RecyclerView>(R.id.chat_recycler)
+        editText = findViewById<EditText>(R.id.editT)
+        sendButton = findViewById<ImageButton>(R.id.send_message)
+        backBtn = findViewById<ImageView>(R.id.icon_right)
+        recipientName = findViewById<TextView>(R.id.name_chat)
+        imageUser = findViewById<ImageView>(R.id.image_user)
+        phoneCall = findViewById<ImageView>(R.id.phone_call)
+        videoCall = findViewById<ImageView>(R.id.video_call)
+    }
+
+    private fun setUpRecipientDetails() {
+        recipientName!!.text = if (userName != null) userName else "Unknown User"
+        if (recipientImageUrl != null && !recipientImageUrl!!.isEmpty()) {
             Picasso.get()
-                    .load(recipientImageUrl)
-                    .placeholder(R.drawable.ic_me)
-                    .into(imageUser);
+                .load(recipientImageUrl)
+                .placeholder(R.drawable.ic_me)
+                .into(imageUser)
         } else {
-            imageUser.setImageResource(R.drawable.ic_me);
+            imageUser!!.setImageResource(R.drawable.ic_me)
         }
+    }
 
-        videoCall.setOnClickListener(v -> videoCallHandling());
-        phoneCall.setOnClickListener(v -> phoneCallHandling());
-        backBtn.setOnClickListener(v -> backHome());
+    private fun setUpRecyclerView() {
+        messageList = ArrayList<Message1?>()
+        chatAdapter = ChatAdapter(messageList as ArrayList<Message1?>)
+        chatRecyclerView!!.setLayoutManager(LinearLayoutManager(this))
+        chatRecyclerView!!.setAdapter(chatAdapter)
+    }
 
+    private fun initializeViewModel() {
+        chatViewModel = ViewModelProvider(this).get<ChatViewModel>(ChatViewModel::class.java)
 
-        sendButton.setOnClickListener(v -> sendMessage());
-
-        // Make drawable icons clickable
-        editText.setOnTouchListener(new DrawableClickListener() {
-            @Override
-            public void onClick(DrawablePosition target) {
-                if (target == DrawablePosition.LEFT) {
-                   openMediaPicker();
-                } else if (target == DrawablePosition.RIGHT) {
-                    openMediaPicker();
+        // Observe messages in real-time
+        chatViewModel!!.loadMessages(currentUserId, userId)
+        chatViewModel!!.getMessagesLiveData(currentUserId, userId)
+            .observe(this, Observer { messages: MutableList<Message1?>? ->
+                if (messages != null) {
+                    messageList!!.clear()
+                    messageList!!.addAll(messages)
+                    chatAdapter!!.notifyDataSetChanged()
+                    chatRecyclerView!!.scrollToPosition(messageList!!.size - 1)
                 }
-            }
-        });
+            })
     }
 
-    private void openMediaPicker() {
-        ImagePicker.with(this)
-                .crop()
-                .maxResultSize(1080, 1080)
-                .compress(1024)
-                .start(1);
+    private fun setUpListeners() {
+        sendButton!!.setOnClickListener(View.OnClickListener { v: View? -> sendMessage() })
+        backBtn!!.setOnClickListener(View.OnClickListener { v: View? -> navigateBack() })
+        phoneCall!!.setOnClickListener(View.OnClickListener { v: View? -> handlePhoneCall() })
+        videoCall!!.setOnClickListener(View.OnClickListener { v: View? -> handleVideoCall() })
     }
 
-    private void videoCallHandling() {
-    }
-
-    private void phoneCallHandling() {
-    }
-
-    private void backHome() {
-        Intent intent = new Intent(ChatActivity.this, MainActivity.class);
-        intent.putExtra("name", userName);
-        intent.putExtra("userID", userId);
-        intent.putExtra("recipientImageUrl", recipientImageUrl);
-        startActivity(intent);
-    }
-
-    private void sendMessage() {
-        String messageText = editText.getText().toString().trim();
+    private fun sendMessage() {
+        val messageText = editText!!.getText().toString().trim { it <= ' ' }
         if (messageText.isEmpty()) {
-            Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(this, "Message cannot be empty", Toast.LENGTH_SHORT).show()
+            return
         }
 
-        String currentUserName = Objects.requireNonNull(mAuth.getCurrentUser()).getDisplayName();
-        if (currentUserName == null) {
-            currentUserName = "Unknown User";
-        }
-
-
-       // User user = new User();
-       // String myName = user.getName();
         // Create a new message
-        Message1 message = new Message1();
-        message.setText(messageText);
-        message.setUserId(currentUserId);
-        message.setRecipientId(userId);
-       //message.setUserName(myName);
-        message.setFirestoreTimestamp(Timestamp.now());
+        val message = Message1()
+        message.text = messageText
+        message.userId = currentUserId
+        message.recipientId = userId
+        message.firestoreTimestamp = Timestamp.now()
 
-        // Add to local list and notify adapter
-        messageList.add(message);
-        chatAdapter.notifyItemInserted(messageList.size() - 1);
-        chatRecyclerView.scrollToPosition(messageList.size() - 1);
+        // Add to local list and update UI
+        messageList!!.add(message)
+        chatAdapter!!.notifyItemInserted(messageList!!.size - 1)
+        chatRecyclerView!!.scrollToPosition(messageList!!.size - 1)
 
-        // Send to Firestore
-        chatViewModel.sendMessage(message);
+        // Send message to Firestore
+        chatViewModel!!.sendMessage(message)
 
         // Clear input field
-        editText.setText("");
+        editText!!.setText("")
+    }
+
+    private fun navigateBack() {
+        val intent = Intent(this@ChatActivity, MainActivity::class.java)
+        intent.putExtra("name", userName)
+        intent.putExtra("userID", userId)
+        intent.putExtra("recipientImageUrl", recipientImageUrl)
+        startActivity(intent)
+    }
+
+    private fun handlePhoneCall() {
+        Toast.makeText(this, "Phone call feature coming soon!", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun handleVideoCall() {
+        Toast.makeText(this, "Video call feature coming soon!", Toast.LENGTH_SHORT).show()
     }
 }

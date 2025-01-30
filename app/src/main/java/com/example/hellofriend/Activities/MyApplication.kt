@@ -1,20 +1,18 @@
-package com.example.hellofriend.Activities;
+package com.example.hellofriend.Activities
 
-import android.app.Application;
+import android.app.Application
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-
-public class MyApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
 
         // Enable Firestore offline persistence
         FirebaseFirestore.getInstance().setFirestoreSettings(
-                new FirebaseFirestoreSettings.Builder()
-                        .setPersistenceEnabled(true)
-                        .build()
-        );
+            FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .build()
+        )
     }
 }

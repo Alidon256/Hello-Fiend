@@ -1,64 +1,68 @@
-package com.example.hellofriend.Models;
+package com.example.hellofriend.Models
 
-import com.google.firebase.Timestamp;
+import com.google.firebase.Timestamp
 
-public class Message1 {
+class Message1 {
+    private var userId: String? = null
+    private var recipientId: String? = null
+    private var userName: String? = null
+    private var text: String? = null
+    private var firestoreTimestamp: Timestamp? = null
 
-    private String userId;
-    private String recipientId;
-    private String userName;
-    private String text;
-    private Timestamp firestoreTimestamp;
+    constructor()
 
-    public Message1() {
-    }
-
-    public Message1(String text, String userId, String recipientId, String userName, Timestamp firestoreTimestamp) {
-        this.text = text;
-        this.userId = userId;
-        this.recipientId = recipientId;
-        this.userName = userName;
-        this.firestoreTimestamp = firestoreTimestamp;
+    constructor(
+        text: String?,
+        userId: String?,
+        recipientId: String?,
+        userName: String?,
+        firestoreTimestamp: Timestamp?
+    ) {
+        this.text = text
+        this.userId = userId
+        this.recipientId = recipientId
+        this.userName = userName
+        this.firestoreTimestamp = firestoreTimestamp
     }
 
     // Getters and Setters
-    public String getUserId() {
-        return userId;
+    fun getUserId(): String? {
+        return userId
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    fun setUserId(userId: String?) {
+        this.userId = userId
     }
 
-    public String getRecipientId() {
-        return recipientId;
+    fun getRecipientId(): String? {
+        return recipientId
     }
 
-    public void setRecipientId(String recipientId) {
-        this.recipientId = recipientId;
+    fun setRecipientId(recipientId: String?) {
+        this.recipientId = recipientId
     }
 
-    public String getUserName() {
-        return userName;
+    fun getUserName(): String? {
+        return userName
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    fun setUserName(userName: String?) {
+        this.userName = userName
     }
 
-    public String getText() {
-        return text;
+    fun getText(): String? {
+        return text
     }
 
-    public void setText(String text) {
-        this.text = text;
+    fun setText(text: String?) {
+        this.text = text
     }
 
-    public Timestamp getFirestoreTimestamp() {
-        return firestoreTimestamp;
+    fun getFirestoreTimestamp(): Timestamp? {
+        return firestoreTimestamp
     }
 
-    public void setFirestoreTimestamp(Timestamp firestoreTimestamp) {
-        this.firestoreTimestamp = firestoreTimestamp;
+    fun setFirestoreTimestamp(firestoreTimestamp: Timestamp?) {
+        this.firestoreTimestamp = firestoreTimestamp
     }
 }

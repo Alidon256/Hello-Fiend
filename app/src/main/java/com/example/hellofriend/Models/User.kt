@@ -1,50 +1,52 @@
-package com.example.hellofriend.Models;
+package com.example.hellofriend.Models
 
-import java.util.Objects;
+import java.util.Objects
 
-public class User {
-    private String id;
-    private String name;
-    private String email;
+class User {
+    private var id: String? = null
+    private var name: String? = null
+    private var email: String? = null
 
-    public User() {}
+    constructor()
 
-    public User(String id, String name, String email) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
+    constructor(id: String, name: String?, email: String?) {
+        this.id = id
+        this.name = name
+        this.email = email
     }
 
-    public void setId(String id) {
-        this.id = id;
+    fun setId(id: String) {
+        this.id = id
     }
 
-    public void setName(String name) {
-        this.name = name;
+    fun setName(name: String?) {
+        this.name = name
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    fun setEmail(email: String?) {
+        this.email = email
     }
 
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public String getEmail() { return email; }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof User)) return false;
-        User user = (User) o;
-        return id.equals(user.id); // Assuming 'id' is the unique identifier
+    fun getId(): String {
+        return id!!
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id); // Assuming 'id' is the unique identifier
+    fun getName(): String? {
+        return name
     }
 
+    fun getEmail(): String? {
+        return email
+    }
 
+    override fun equals(o: Any?): Boolean {
+        if (this === o) return true
+        if (o !is User) return false
+        val user = o
+        return id == user.id // Assuming 'id' is the unique identifier
+    }
 
-
+    override fun hashCode(): Int {
+        return Objects.hash(id) // Assuming 'id' is the unique identifier
+    }
 }

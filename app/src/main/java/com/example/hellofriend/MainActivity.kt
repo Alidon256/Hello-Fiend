@@ -1,131 +1,117 @@
-package com.example.hellofriend;
+package com.example.hellofriend
 
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.hellofriend.Adapters.UserAdapter
+import com.example.hellofriend.Models.User1
+import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
+import java.lang.Exception
+import java.util.ArrayList
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+class MainActivity : AppCompatActivity() {
+    private var recyclerView: RecyclerView? = null
+    private var userAdapter: UserAdapter? = null
+    private var userList: MutableList<User1?>? = null
+    private var db: FirebaseFirestore? = null
+    private var cameraHome: ImageView? = null
+    private var menuHome: ImageView? = null
 
-import com.example.hellofriend.Adapters.UserAdapter;
-import com.example.hellofriend.Models.User1;
-import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-import java.util.ArrayList;
-import java.util.List;
+        // Initialize UI components
+        initializeUI()
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "MainActivity";
+        // Set up RecyclerView
+        setupRecyclerView()
 
-    private RecyclerView recyclerView;
-    private UserAdapter userAdapter;
-    private List<User1> userList;
-    private FirebaseFirestore db;
-    private ImageView cameraHome, menuHome;
+        // Fetch users from Firestore
+        fetchUsers()
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        try {
-            // Initialize UI components
-            cameraHome = findViewById(R.id.camera_home);
-            menuHome = findViewById(R.id.menu_home);
-            recyclerView = findViewById(R.id.recyclerView);
-
-            // Initialize RecyclerView
-            recyclerView.setHasFixedSize(true);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-            // Initialize Firestore and data list
-            db = FirebaseFirestore.getInstance();
-            userList = new ArrayList<>();
-
-            // Set up Adapter
-            userAdapter = new UserAdapter(this, userList);
-            recyclerView.setAdapter(userAdapter);
-
-            // Fetch user data from Firestore
-            fetchUsers();
-
-            // Set listeners for UI interactions
-            setupClickListeners();
-        } catch (Exception e) {
-            Log.e(TAG, "Error initializing MainActivity", e);
-            Toast.makeText(this, "An error occurred during initialization", Toast.LENGTH_LONG).show();
-        }
+        // Set up click listeners
+        setupClickListeners()
     }
 
-    /**
-     * Sets up click listeners for the camera and menu buttons.
-     */
-    private void setupClickListeners() {
-        cameraHome.setOnClickListener(v -> {
-            Log.d(TAG, "Camera icon clicked");
-            try {
-                ImagePicker.with(this)
-                        .cameraOnly()
-                        .start();
-            } catch (Exception e) {
-                Log.e(TAG, "Error launching camera", e);
-                Toast.makeText(this, "Unable to open camera", Toast.LENGTH_SHORT).show();
+    private fun initializeUI() {
+        cameraHome = findViewById<ImageView>(R.id.camera_home)
+        menuHome = findViewById<ImageView>(R.id.menu_home)
+        recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        db = FirebaseFirestore.getInstance()
+        userList = ArrayList<User1?>()
+    }
+
+    private fun setupRecyclerView() {
+        recyclerView!!.setHasFixedSize(true)
+        recyclerView!!.setLayoutManager(LinearLayoutManager(this))
+        userAdapter = UserAdapter(this, userList)
+        recyclerView!!.setAdapter(userAdapter)
+    }
+
+    private fun setupClickListeners() {
+        cameraHome!!.setOnClickListener(View.OnClickListener { v: View? ->
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.CAMERA
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf<String>(Manifest.permission.CAMERA),
+                    CAMERA_PERMISSION_REQUEST_CODE
+                )
+            } else {
+                ImagePicker.with(this).cameraOnly().start()
             }
-        });
+        })
 
-        menuHome.setOnClickListener(v -> {
-            Log.d(TAG, "Menu icon clicked");
-            Toast.makeText(this, "Menu clicked", Toast.LENGTH_SHORT).show();
-        });
+        menuHome!!.setOnClickListener(View.OnClickListener { v: View? ->
+            Toast.makeText(
+                this,
+                "Menu clicked",
+                Toast.LENGTH_SHORT
+            ).show()
+        })
     }
 
-    /**
-     * Fetches users from the Firestore collection and updates the RecyclerView.
-     */
-    private void fetchUsers() {
-        Log.d(TAG, "Fetching users from Firestore");
-        db.collection("userProfileInfo")
-                .get()
-                .addOnSuccessListener(this::handleSuccess)
-                .addOnFailureListener(this::handleFailure);
+    private fun fetchUsers() {
+        db!!.collection("userProfileInfo")
+            .get()
+            .addOnSuccessListener(OnSuccessListener { queryDocumentSnapshots: QuerySnapshot? ->
+                this.updateUserList(
+                    queryDocumentSnapshots!!
+                )
+            })
+            .addOnFailureListener(OnFailureListener { e: Exception? ->
+                Log.e(TAG, "Error fetching users", e)
+                Toast.makeText(this, "Failed to load users", Toast.LENGTH_SHORT).show()
+            })
     }
 
-    /**
-     * Handles the successful fetch of user data.
-     *
-     * @param queryDocumentSnapshots The Firestore query results.
-     */
-    private void handleSuccess(@NonNull QuerySnapshot queryDocumentSnapshots) {
-        Log.d(TAG, "Successfully fetched users from Firestore");
-        try {
-            userList.clear();
-            userList.addAll(queryDocumentSnapshots.toObjects(User1.class));
-            userAdapter.notifyDataSetChanged();
-            Log.d(TAG, "User list updated with " + userList.size() + " users");
-        } catch (Exception e) {
-            Log.e(TAG, "Error parsing user data", e);
-            Toast.makeText(this, "Error parsing user data", Toast.LENGTH_SHORT).show();
-        }
+    private fun updateUserList(queryDocumentSnapshots: QuerySnapshot) {
+        userList!!.clear()
+        userList!!.addAll(queryDocumentSnapshots.toObjects<User1?>(User1::class.java))
+        userAdapter!!.notifyDataSetChanged()
+        Log.d(TAG, "User list updated with " + userList!!.size + " users")
     }
 
-    /**
-     * Handles errors when fetching user data.
-     *
-     * @param e The exception thrown during the fetch.
-     */
-    private void handleFailure(@NonNull Exception e) {
-        Log.e(TAG, "Error fetching users", e);
-        if (e instanceof FirebaseFirestoreException) {
-            FirebaseFirestoreException firestoreException = (FirebaseFirestoreException) e;
-            Toast.makeText(this, "Firestore Error: " + firestoreException.getMessage(), Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "Error fetching user data", Toast.LENGTH_SHORT).show();
-        }
+
+    companion object {
+        private const val TAG = "MainActivity"
+        private const val CAMERA_PERMISSION_REQUEST_CODE = 101
     }
 }
