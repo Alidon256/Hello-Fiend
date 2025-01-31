@@ -9,9 +9,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.hellofriend.Activities.ChatActivity
 import com.example.hellofriend.Models.User1
 import com.example.hellofriend.R
+import com.example.hellofriend.WebpTranscoder
 import com.squareup.picasso.Picasso
 
 class UserAdapter(context: Context, userList: MutableList<User1>?) :
@@ -37,10 +40,12 @@ class UserAdapter(context: Context, userList: MutableList<User1>?) :
         holder.userName.text = if (user.name != null) user.name else "Unknown User"
 
         // Load user image with Picasso
-        if (user.profileImageUrl != null && !user.profileImageUrl.isEmpty()) {
-            Picasso.get()
+        if (user.profileImageUrl != null && !user.profileImageUrl!!.isEmpty()) {
+            Glide.with(context)
+                .asBitmap()
                 .load(user.profileImageUrl)
                 .placeholder(R.drawable.ic_me)
+                .apply(RequestOptions.bitmapTransform(WebpTranscoder()))
                 .error(R.drawable.ic_me)
                 .into(holder.userImage)
         } else {

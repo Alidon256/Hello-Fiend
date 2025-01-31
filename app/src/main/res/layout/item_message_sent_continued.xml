@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:orientation="horizontal"
+    android:gravity="end">
+    <TextView
+        android:id="@+id/message_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/bg_sender"
+        android:text="Hello,How are you doing?"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:maxWidth="250dp" />
+</LinearLayout>
+

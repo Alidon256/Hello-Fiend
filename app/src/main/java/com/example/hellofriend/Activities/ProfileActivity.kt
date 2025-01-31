@@ -15,8 +15,11 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.hellofriend.MainActivity
 import com.example.hellofriend.R
+import com.example.hellofriend.WebpTranscoder
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -67,7 +70,7 @@ class ProfileActivity : AppCompatActivity() {
         logInUser = findViewById<Button>(R.id.btnLogin_user)
 
         // Open image picker on profile image click
-        userProfileImage!!.setOnClickListener(View.OnClickListener { v: View? -> openFileChooser() })
+       // userProfileImage!!.setOnClickListener(View.OnClickListener { v: View? -> openFileChooser() })
 
         // Open date picker dialog for date of birth field
         userDateOfBirth!!.setOnClickListener(View.OnClickListener { v: View? -> showDatePickerDialog() })
@@ -75,11 +78,17 @@ class ProfileActivity : AppCompatActivity() {
         // Handle Save/Update button click
         logInUser!!.setOnClickListener(View.OnClickListener { v: View? ->
             if (validateInputs()) {
+                    Objects.requireNonNull<FirebaseUser?>(mAuth!!.currentUser).uid
+                    saveUserInfoToFirestore()
+            }
+        })
+        /*logInUser!!.setOnClickListener(View.OnClickListener { v: View? ->
+            if (validateInputs()) {
                 uploadImageToFirebase(
                     Objects.requireNonNull<FirebaseUser?>(mAuth!!.currentUser).uid,
                     OnSuccessListener { imageUrl: String? -> this.saveUserInfoToFirestore(imageUrl) })
             }
-        })
+        })*/
     }
 
     private fun showDatePickerDialog() {
@@ -100,7 +109,7 @@ class ProfileActivity : AppCompatActivity() {
         datePickerDialog.show()
     }
 
-    private fun openFileChooser() {
+   /* private fun openFileChooser() {
         ImagePicker.with(this)
             .crop() // Crop image (optional)
             .compress(1024) // Compress image size (optional)
@@ -112,7 +121,12 @@ class ProfileActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == RESULT_OK && data != null) {
             imageUri = data.getData()
-            Picasso.get().load(imageUri).into(userProfileImage)
+            Glide
+                .with(this)
+                .asBitmap()
+                .load(imageUri)
+                .apply(RequestOptions.bitmapTransform(WebpTranscoder()))
+                .into(userProfileImage!!)
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(this, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
         } else {
@@ -140,41 +154,27 @@ class ProfileActivity : AppCompatActivity() {
         } else {
             onSuccess.onSuccess("") // No image uploaded, pass empty URL
         }
-    }
+    }*/
 
-    private fun saveUserInfoToFirestore(imageUrl: String?) {
+    private fun saveUserInfoToFirestore() {
         val selectedGenderId = genderRadioGroup!!.checkedRadioButtonId
         val gender = if (selectedGenderId != -1)
             (findViewById<View?>(selectedGenderId) as RadioButton).getText().toString()
         else
             "Not Specified"
 
-        val userId = Objects.requireNonNull<FirebaseUser?>(mAuth!!.currentUser).getUid()
+        val userId = Objects.requireNonNull<FirebaseUser?>(mAuth!!.currentUser).uid
 
         val userData: MutableMap<String?, Any?> = HashMap<String?, Any?>()
         userData.put("userId", userId)
-        userData.put(
-            "name",
-            Objects.requireNonNull<Editable?>(userName!!.getText()).toString().trim { it <= ' ' })
-        userData.put(
-            "email",
-            Objects.requireNonNull<Editable?>(userEmailAddress!!.getText()).toString()
-                .trim { it <= ' ' })
-        userData.put(
-            "address",
-            Objects.requireNonNull<Editable?>(userAddress!!.getText()).toString()
-                .trim { it <= ' ' })
-        userData.put(
-            "contact",
-            Objects.requireNonNull<Editable?>(userContact!!.getText()).toString()
-                .trim { it <= ' ' })
-        userData.put(
-            "dateOfBirth",
-            Objects.requireNonNull<Editable?>(userDateOfBirth!!.getText()).toString()
-                .trim { it <= ' ' })
+        userData.put("name", Objects.requireNonNull<Editable?>(userName!!.getText()).toString().trim { it <= ' ' })
+        userData.put("email", Objects.requireNonNull<Editable?>(userEmailAddress!!.getText()).toString().trim { it <= ' ' })
+        userData.put("address", Objects.requireNonNull<Editable?>(userAddress!!.getText()).toString().trim { it <= ' ' })
+        userData.put("contact", Objects.requireNonNull<Editable?>(userContact!!.getText()).toString().trim { it <= ' ' })
+        userData.put("dateOfBirth", Objects.requireNonNull<Editable?>(userDateOfBirth!!.getText()).toString().trim { it <= ' ' })
         userData.put("gender", gender)
         userData.put("userRole", "User")
-        userData.put("profileImageUrl", imageUrl)
+        //userData.put("profileImageUrl", imageUrl)
 
         db!!.collection("userProfileInfo")
             .document(userId)
@@ -183,7 +183,7 @@ class ProfileActivity : AppCompatActivity() {
                 val intent = Intent(this@ProfileActivity, MainActivity::class.java)
                 intent.putExtra("userId", userId)
                 intent.putExtra("name", userName!!.getText().toString())
-                intent.putExtra("profileImageUrl", imageUrl)
+                //intent.putExtra("profileImageUrl", imageUrl)
                 startActivity(intent)
                 Log.d("UserProfileInfo", "Profile updated successfully with ID: $userId")
                 Toast.makeText(this, "Profile updated successfully", Toast.LENGTH_SHORT).show()
@@ -196,15 +196,15 @@ class ProfileActivity : AppCompatActivity() {
 
     private fun validateInputs(): Boolean {
         if (userName!!.getText().toString().trim { it <= ' ' }.isEmpty()) {
-            userName!!.setError("Name is required")
+            userName!!.error = "Name is required"
             return false
         }
         if (userEmailAddress!!.getText().toString().trim { it <= ' ' }.isEmpty()) {
-            userEmailAddress!!.setError("Email is required")
+            userEmailAddress!!.error = "Email is required"
             return false
         }
         if (userAddress!!.getText().toString().trim { it <= ' ' }.isEmpty()) {
-            userAddress!!.setError("Address is required")
+            userAddress!!.error = "Address is required"
             return false
         }
         if (userContact!!.getText().toString().trim { it <= ' ' }.isEmpty()) {

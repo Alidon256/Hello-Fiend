@@ -3,9 +3,9 @@ package com.example.hellofriend.Models
 import java.util.Objects
 
 class User {
-    private var id: String? = null
-    private var name: String? = null
-    private var email: String? = null
+    var id: String? = null
+   var name: String? = null
+    var email: String? = null
 
     constructor()
 
@@ -13,30 +13,6 @@ class User {
         this.id = id
         this.name = name
         this.email = email
-    }
-
-    fun setId(id: String) {
-        this.id = id
-    }
-
-    fun setName(name: String?) {
-        this.name = name
-    }
-
-    fun setEmail(email: String?) {
-        this.email = email
-    }
-
-    fun getId(): String {
-        return id!!
-    }
-
-    fun getName(): String? {
-        return name
-    }
-
-    fun getEmail(): String? {
-        return email
     }
 
     override fun equals(o: Any?): Boolean {

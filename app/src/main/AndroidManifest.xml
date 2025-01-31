@@ -28,7 +28,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Activities.ChatActivity"
             android:exported="false" />

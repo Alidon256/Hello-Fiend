@@ -47,7 +47,7 @@ class Main : AppCompatActivity() {
             userList = ArrayList<User1?>()
 
             // Set up Adapter
-            userAdapter = UserAdapter(this, userList)
+            userAdapter = UserAdapter(this, userList as MutableList<User1>?)
             recyclerView!!.setAdapter(userAdapter)
 
             // Fetch user data from Firestore

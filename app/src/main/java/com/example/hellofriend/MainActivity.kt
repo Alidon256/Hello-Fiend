@@ -25,7 +25,7 @@ import java.util.ArrayList
 class MainActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var userAdapter: UserAdapter? = null
-    private var userList: MutableList<User1?>? = null
+    private var userList: MutableList<User1>? = null
     private var db: FirebaseFirestore? = null
     private var cameraHome: ImageView? = null
     private var menuHome: ImageView? = null
@@ -34,16 +34,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Initialize UI components
         initializeUI()
-
-        // Set up RecyclerView
         setupRecyclerView()
-
-        // Fetch users from Firestore
         fetchUsers()
-
-        // Set up click listeners
         setupClickListeners()
     }
 
@@ -52,39 +45,28 @@ class MainActivity : AppCompatActivity() {
         menuHome = findViewById<ImageView>(R.id.menu_home)
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         db = FirebaseFirestore.getInstance()
-        userList = ArrayList<User1?>()
+        userList = ArrayList<User1>()
     }
 
     private fun setupRecyclerView() {
         recyclerView!!.setHasFixedSize(true)
         recyclerView!!.setLayoutManager(LinearLayoutManager(this))
-        userAdapter = UserAdapter(this, userList)
+        userAdapter = UserAdapter(this, userList as MutableList<User1>?)
         recyclerView!!.setAdapter(userAdapter)
     }
 
     private fun setupClickListeners() {
         cameraHome!!.setOnClickListener(View.OnClickListener { v: View? ->
-            if (ContextCompat.checkSelfPermission(
-                    this,
-                    Manifest.permission.CAMERA
-                ) != PackageManager.PERMISSION_GRANTED
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
             ) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf<String>(Manifest.permission.CAMERA),
-                    CAMERA_PERMISSION_REQUEST_CODE
-                )
+                ActivityCompat.requestPermissions(this,arrayOf<String>(Manifest.permission.CAMERA),CAMERA_PERMISSION_REQUEST_CODE)
             } else {
                 ImagePicker.with(this).cameraOnly().start()
             }
         })
 
         menuHome!!.setOnClickListener(View.OnClickListener { v: View? ->
-            Toast.makeText(
-                this,
-                "Menu clicked",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(this,"Menu clicked",Toast.LENGTH_SHORT).show()
         })
     }
 

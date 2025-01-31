@@ -5,80 +5,56 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hellofriend.Models.Message1
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
-import java.lang.Exception
-import java.util.ArrayList
-import java.util.List
 
 class ChatViewModel : ViewModel() {
-    private val messagesLiveData = MutableLiveData<MutableList<Message1?>?>()
+
+    private val messagesLiveData = MutableLiveData<MutableList<Message1>>()
     private val db = FirebaseFirestore.getInstance()
 
-    fun getMessagesLiveData(
-        currentUserId: String?,
-        recipientId: String?
-    ): LiveData<MutableList<Message1?>?> {
-        if (currentUserId == null || recipientId == null) {
-            messagesLiveData.value = ArrayList<Message1?>() // Handle null inputs gracefully
-            return messagesLiveData
-        }
+    // Generate a unique chat ID based on user IDs
+    private fun generateChatId(userId: String, recipientId: String): String {
+        val ids = listOf(userId, recipientId).sorted() // Sort to make the chat ID order consistent
+        return ids.joinToString("_")
+    }
 
+    // Fetch messages for a specific chat
+    fun getMessagesLiveData(currentUserId: String, recipientId: String): LiveData<MutableList<Message1>> {
         loadMessages(currentUserId, recipientId)
         return messagesLiveData
     }
 
-    fun loadMessages(currentUserId: String?, recipientId: String?) {
-        if (currentUserId == null || recipientId == null) {
-            // Handle null inputs gracefully
-            messagesLiveData.value = mutableListOf<Message1?>()
-            return
-        }
+    // Load messages from Firestore for a specific chat
+    private fun loadMessages(currentUserId: String, recipientId: String) {
+        val chatId = generateChatId(currentUserId, recipientId)
 
-        db.collection("Messages")
-            .whereIn(
-                "userId",
-                listOf<String?>(currentUserId, recipientId)
-            ) // Get messages for both users
-            .whereIn("recipientId", listOf<String?>(currentUserId, recipientId))
-            .orderBy("timestamp", Query.Direction.ASCENDING)
-            .addSnapshotListener(EventListener { querySnapshot: QuerySnapshot?, e: FirebaseFirestoreException? ->
+        db.collection("Chats")
+            .document(chatId) // Use the generated chatId
+            .collection("Messages")
+            .orderBy("firestoreTimestamp", Query.Direction.ASCENDING)
+            .addSnapshotListener { querySnapshot, e ->
                 if (e != null) {
-                    e.printStackTrace()
-                    return@EventListener
+                    Log.e("ChatViewModel", "Error fetching messages", e)
+                    return@addSnapshotListener
                 }
-                if (querySnapshot != null) {
-                    val messages: MutableList<Message1?> = ArrayList<Message1?>()
-                    for (doc in querySnapshot.getDocuments()) {
-                        val message = doc.toObject<Message1?>(Message1::class.java)
-                        if (message != null) {
-                            messages.add(message)
-                        }
-                    }
-                    messagesLiveData.value = messages
+                val messages = mutableListOf<Message1>()
+                querySnapshot?.documents?.forEach { doc ->
+                    doc.toObject(Message1::class.java)?.let { messages.add(it) }
                 }
-            })
+                messagesLiveData.value = messages
+            }
     }
 
+    // Send message to FireStore under a specific chat
+    fun sendMessage(message: Message1) {
+        val chatId = generateChatId(message.userId!!, message.recipientId!!)
 
-    fun sendMessage(message: Message1?) {
-        if (message == null) {
-            return  // Prevent sending a null message
-        }
-
-        db.collection("Messages").add(message)
-            .addOnSuccessListener(OnSuccessListener { documentReference: DocumentReference? ->
-                           Log.d("ChatViewModel", "Message sent successfully.")
-            })
-            .addOnFailureListener(OnFailureListener { e: Exception? ->
-                e!!.printStackTrace()
-                Log.e("ChatViewModel", "Error sending message: " + e.message)
-            })
+        db.collection("Chats") // Chats collection
+            .document(chatId) // Use chatId as the document name
+            .collection("Messages") // Store messages in a subcollection
+            .add(message)
+            .addOnSuccessListener { Log.d("ChatViewModel", "Message sent successfully.") }
+            .addOnFailureListener { e -> Log.e("ChatViewModel", "Error sending message", e) }
     }
 }

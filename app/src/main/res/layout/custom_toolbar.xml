@@ -5,7 +5,7 @@
     android:id="@+id/appBarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Teal"
+    android:background="@color/btn_grey"
     android:fitsSystemWindows="true"
     app:elevation="0dp">
 
@@ -26,7 +26,7 @@
             android:gravity="center"
             android:lines="1"
             android:maxLines="1"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="18sp"
             tools:text="Hello Friend" />
 
