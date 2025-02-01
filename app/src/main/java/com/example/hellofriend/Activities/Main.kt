@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hellofriend.Adapters.UserAdapter
+import com.example.hellofriend.Models.Message1
 import com.example.hellofriend.Models.User1
 import com.example.hellofriend.R
 import com.github.dhaval2404.imagepicker.ImagePicker
@@ -24,6 +25,7 @@ class Main : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var userAdapter: UserAdapter? = null
     private var userList: MutableList<User1?>? = null
+    private var messageLast: MutableList<Message1> = ArrayList()
     private var db: FirebaseFirestore? = null
     private var cameraHome: ImageView? = null
     private var menuHome: ImageView? = null
@@ -47,7 +49,7 @@ class Main : AppCompatActivity() {
             userList = ArrayList<User1?>()
 
             // Set up Adapter
-            userAdapter = UserAdapter(this, userList as MutableList<User1>?)
+            userAdapter = UserAdapter(this, userList as MutableList<User1>?, messageLast)
             recyclerView!!.setAdapter(userAdapter)
 
             // Fetch user data from Firestore

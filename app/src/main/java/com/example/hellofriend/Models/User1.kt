@@ -1,5 +1,7 @@
 package com.example.hellofriend.Models
 
+import com.google.firebase.Timestamp
+
 class User1 {
     var userId: String? = null
     var name: String? = null

@@ -11,13 +11,15 @@ class Message1 {
 
     constructor()
 
+    // Constructor in Message1 class
     constructor(
         text: String?,
         userId: String?,
         recipientId: String?,
         userName: String?,
         firestoreTimestamp: Timestamp?
-    ) {
+    )
+    {
         this.text = text
         this.userId = userId
         this.recipientId = recipientId

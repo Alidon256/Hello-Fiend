@@ -8,12 +8,12 @@
           <targets>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="Default" identifier="serial=127.0.0.1:5555;connection=d42b15a4" />
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=0563914069007678" />
               </handle>
             </Target>
             <Target type="DEFAULT_BOOT">
               <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=0563914069007678" />
+                <DeviceId pluginId="Default" identifier="serial=emulator-5554;connection=16c69ad3" />
               </handle>
             </Target>
           </targets>

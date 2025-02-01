@@ -12,21 +12,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.hellofriend.Activities.ChatActivity
+import com.example.hellofriend.Models.Message1
 import com.example.hellofriend.Models.User1
 import com.example.hellofriend.R
 import com.example.hellofriend.WebpTranscoder
-import com.squareup.picasso.Picasso
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.*
 
-class UserAdapter(context: Context, userList: MutableList<User1>?) :
-    RecyclerView.Adapter<UserAdapter.ViewHolder?>() {
-    private val context: Context
-    private val userList: MutableList<User1>?
-
-    init {
-        requireNotNull(context) { "Context cannot be null in UserAdapter" }
-        this.context = context
-        this.userList = userList
-    }
+class UserAdapter(
+    private val context: Context,
+    private var userList: MutableList<User1>?,
+    private var messageLast: MutableList<Message1>?
+) : RecyclerView.Adapter<UserAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.user_item, parent, false)
@@ -34,13 +32,23 @@ class UserAdapter(context: Context, userList: MutableList<User1>?) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        if (userList.isNullOrEmpty()) return // Prevent crash if userList is empty
+
         val user = userList!![position]
 
-        // Set user name
-        holder.userName.text = if (user.name != null) user.name else "Unknown User"
+        // 🔥 Find the last message for this specific user
+        val message = messageLast
+            ?.filter { it.userId == user.userId || it.recipientId == user.userId }
+            ?.maxByOrNull { it.firestoreTimestamp?.seconds ?: 0 } // Get the most recent message
+            ?: Message1("", "", "", "", Timestamp.now()) // Default message
 
-        // Load user image with Picasso
-        if (user.profileImageUrl != null && !user.profileImageUrl!!.isEmpty()) {
+
+
+
+        holder.bind(user, message)
+
+        holder.userName.text = user.name ?: "Unknown User"
+        if (!user.profileImageUrl.isNullOrEmpty()) {
             Glide.with(context)
                 .asBitmap()
                 .load(user.profileImageUrl)
@@ -52,25 +60,87 @@ class UserAdapter(context: Context, userList: MutableList<User1>?) :
             holder.userImage.setImageResource(R.drawable.ic_me)
         }
 
-        // Set click listener
-        holder.itemView.setOnClickListener(View.OnClickListener { v: View? ->
-            val intent = Intent(context, ChatActivity::class.java)
-            intent.putExtra("userId", user.userId)
-            intent.putExtra("name", user.name)
-            intent.putExtra("recipientImageUrl", user.profileImageUrl)
+        // Set click listener to open chat
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, ChatActivity::class.java).apply {
+                putExtra("userId", user.userId)
+                putExtra("name", user.name)
+                putExtra("recipientImageUrl", user.profileImageUrl)
+            }
             context.startActivity(intent)
 
-            Log.d("UserAdapter", "User clicked: " + user.name)
-            Log.d("UserAdapter", "User ID: " + user.userId)
-        })
+            Log.d("UserAdapter", "User clicked: ${user.name}, ID: ${user.userId}")
+        }
     }
 
     override fun getItemCount(): Int {
-        return if (userList != null) userList.size else 0
+        return userList?.size ?: 0
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var userName: TextView = itemView.findViewById<TextView>(R.id.userName)
-        var userImage: ImageView = itemView.findViewById<ImageView>(R.id.userImage)
+        val userName: TextView = itemView.findViewById(R.id.userName)
+        val userImage: ImageView = itemView.findViewById(R.id.userImage)
+        val lastMessage: TextView = itemView.findViewById(R.id.lastMessage)
+        val timestamp: TextView = itemView.findViewById(R.id.status)
+
+        fun bind(user: User1, message: Message1) {
+            userName.text = user.name ?: "Unknown User"
+            lastMessage.text = message.text?.ifEmpty { "No messages yet" }
+
+            val formattedTime = formatTimestamp(message.firestoreTimestamp)
+            timestamp.text = formattedTime
+            timestamp.visibility = if (formattedTime.isNotEmpty()) View.VISIBLE else View.GONE
+        }
+
+        private fun formatTimestamp(timestamp: Timestamp?): String {
+            if (timestamp == null) return ""
+            val date = timestamp.toDate()
+            val currentDate = Calendar.getInstance()
+            val messageDate = Calendar.getInstance().apply { time = date }
+            val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+            val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
+
+            return when {
+                isSameDay(currentDate, messageDate) -> timeFormat.format(date) // Show only time for today’s messages
+                else -> "${dateFormat.format(date)}, ${timeFormat.format(date)}" // Show date + time for old messages
+            }
+        }
+
+        private fun isSameDay(calendar: Calendar, calendar2: Calendar): Boolean {
+            return calendar.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
+                    calendar.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
+        }
     }
+    fun updateLastMessage(userId: String?, newMessage: String, newTimestamp: Long) {
+        if (userId == null) {
+            Log.e("UserAdapter", "User ID is null, cannot update last message")
+            return
+        }
+
+        Log.d("UserAdapter", "Updating last message for User ID: $userId")
+
+        userList?.forEachIndexed { index, user ->
+            Log.d("UserAdapter", "Checking User ID at index $index: ${user.userId}")
+
+            if (user.userId == userId) {
+                Log.d("UserAdapter", "Found matching user: ${user.userId} at position $index")
+
+                if (messageLast != null && index < messageLast!!.size) {
+                    messageLast!![index].text = newMessage
+                    messageLast!![index].firestoreTimestamp = Timestamp(Date(newTimestamp))
+                    Log.d("UserAdapter", "Updated message: $newMessage, Timestamp: $newTimestamp")
+                } else {
+                    Log.d("UserAdapter", "Adding new message entry for user: $userId")
+                    messageLast?.add(Message1(newMessage, userId ?: "", "", "", Timestamp(Date(newTimestamp))))
+                }
+
+                notifyItemChanged(index)
+                return
+            }
+        }
+
+        Log.d("UserAdapter", "No matching user found for User ID: $userId")
+    }
+
+
 }

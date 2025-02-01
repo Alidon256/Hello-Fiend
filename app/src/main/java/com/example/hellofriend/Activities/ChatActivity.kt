@@ -2,6 +2,7 @@ package com.example.hellofriend.Activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -139,8 +140,21 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun navigateBack() {
-        val intent = Intent(this@ChatActivity, MainActivity::class.java)
-        startActivity(intent)
+        val lastMessage = messageList.lastOrNull()
+        val lastMessageText = lastMessage?.text ?: "No messages yet"
+        val lastMessageTimestamp = lastMessage?.firestoreTimestamp?.toDate()?.time ?: 0
+
+        Log.d("ChatActivity", "Navigating back with Last Message: $lastMessageText, Timestamp: $lastMessageTimestamp")
+
+        val resultIntent = Intent(this, MainActivity::class.java).apply {
+            putExtra("lastMessage", lastMessageText)
+            putExtra("lastMessageTimestamp", lastMessageTimestamp)
+            putExtra("userId", intent.getStringExtra("userId"))
+        }
+        startActivity(resultIntent)
         finish()
     }
+
+
+
 }

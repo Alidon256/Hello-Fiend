@@ -7,7 +7,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/toolbar_track"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
         android:backgroundTint="@color/btn_grey"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
@@ -20,8 +20,8 @@
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/image_user"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:scaleType="centerCrop"
@@ -57,12 +57,12 @@
 
             <ImageView
                 android:id="@+id/phone_call"
-                android:layout_width="30dp"
+                android:layout_width="20dp"
                 android:layout_height="30dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_phone_black"
+                android:src="@drawable/telephone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/menu_chat"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -74,7 +74,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:src="@drawable/ic_video_cam"
+                android:src="@drawable/cam_recorder"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/phone_call"
                 app:layout_constraintTop_toTopOf="parent" />
