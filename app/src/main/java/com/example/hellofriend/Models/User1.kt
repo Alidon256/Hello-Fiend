@@ -12,6 +12,8 @@ class User1 {
     var dateOfBirth: String? = null
     var userRole: String? = null
     var profileImageUrl: String? = null
+    var lastMessage: String? = null
+    var lastMessageTimestamp: Timestamp? = null
 
     constructor() // Empty constructor for Firestore
 

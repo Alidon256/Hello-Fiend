@@ -85,9 +85,9 @@ class UserAdapter(
 
         fun bind(user: User1, message: Message1) {
             userName.text = user.name ?: "Unknown User"
-            lastMessage.text = message.text?.ifEmpty { "No messages yet" }
+            lastMessage.text = user.lastMessage?.ifEmpty { "No messages yet" }
 
-            val formattedTime = formatTimestamp(message.firestoreTimestamp)
+            val formattedTime = formatTimestamp(user.lastMessageTimestamp)
             timestamp.text = formattedTime
             timestamp.visibility = if (formattedTime.isNotEmpty()) View.VISIBLE else View.GONE
         }
@@ -111,36 +111,43 @@ class UserAdapter(
                     calendar.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
         }
     }
-    fun updateLastMessage(userId: String?, newMessage: String, newTimestamp: Long) {
+    fun updateLastMessage(userId: String?, newMessage: String, newTimestamp: Long, recipientId: String) {
         if (userId == null) {
             Log.e("UserAdapter", "User ID is null, cannot update last message")
             return
         }
 
-        Log.d("UserAdapter", "Updating last message for User ID: $userId")
+        Log.d("UserAdapter", "Attempting to update last message for User ID: $userId or Recipient ID: $recipientId")
 
+        // ✅ Check if userList is null or empty
+        if (userList.isNullOrEmpty()) {
+            Log.e("UserAdapter", "User list is empty or null! Cannot update last message.")
+            return
+        }
+
+        // ✅ Iterate over userList and update message directly
         userList?.forEachIndexed { index, user ->
             Log.d("UserAdapter", "Checking User ID at index $index: ${user.userId}")
 
-            if (user.userId == userId) {
+            // ✅ Update message if the user is either the sender or the recipient
+            if (user.userId?.trim() == userId.trim() || user.userId?.trim() == recipientId.trim()) {
                 Log.d("UserAdapter", "Found matching user: ${user.userId} at position $index")
 
-                if (messageLast != null && index < messageLast!!.size) {
-                    messageLast!![index].text = newMessage
-                    messageLast!![index].firestoreTimestamp = Timestamp(Date(newTimestamp))
-                    Log.d("UserAdapter", "Updated message: $newMessage, Timestamp: $newTimestamp")
-                } else {
-                    Log.d("UserAdapter", "Adding new message entry for user: $userId")
-                    messageLast?.add(Message1(newMessage, userId ?: "", "", "", Timestamp(Date(newTimestamp))))
-                }
+                // ✅ Directly update the message and timestamp
+                user.lastMessage = newMessage
+                user.lastMessageTimestamp = Timestamp(Date(newTimestamp))
 
+                Log.d("UserAdapter", "Updated last message: $newMessage, Timestamp: $newTimestamp")
+
+                // ✅ Update UI
                 notifyItemChanged(index)
-                return
             }
         }
 
-        Log.d("UserAdapter", "No matching user found for User ID: $userId")
+        Log.d("UserAdapter", "Finished updating last message.")
     }
+
+
 
 
 }

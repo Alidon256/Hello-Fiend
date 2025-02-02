@@ -33,6 +33,7 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var currentUserId: String
+    private lateinit var recipientId: String
     private lateinit var userId: String
     private lateinit var userName: String
     private var recipientImageUrl: String? = null
@@ -54,6 +55,7 @@ class ChatActivity : AppCompatActivity() {
 
         // Get intent data
         userId = intent.getStringExtra("userId") ?: ""
+        recipientId = intent.getStringExtra("recipientId") ?: ""
         userName = intent.getStringExtra("name") ?: ""
         recipientImageUrl = intent.getStringExtra("recipientImageUrl")
 
@@ -127,7 +129,7 @@ class ChatActivity : AppCompatActivity() {
         val message = Message1(
             text = messageText,
             userId = currentUserId,
-            recipientId = userId,
+            recipientId = recipientId,
             userName = userName,
             firestoreTimestamp = com.google.firebase.Timestamp.now()
         )
@@ -142,6 +144,7 @@ class ChatActivity : AppCompatActivity() {
     private fun navigateBack() {
         val lastMessage = messageList.lastOrNull()
         val lastMessageText = lastMessage?.text ?: "No messages yet"
+        val recipientId = lastMessage?.recipientId ?: ""
         val lastMessageTimestamp = lastMessage?.firestoreTimestamp?.toDate()?.time ?: 0
 
         Log.d("ChatActivity", "Navigating back with Last Message: $lastMessageText, Timestamp: $lastMessageTimestamp")
@@ -150,7 +153,9 @@ class ChatActivity : AppCompatActivity() {
             putExtra("lastMessage", lastMessageText)
             putExtra("lastMessageTimestamp", lastMessageTimestamp)
             putExtra("userId", intent.getStringExtra("userId"))
+            putExtra("recipientId", recipientId)
         }
+        Log.d("ChatActivity", "RecipientId: $recipientId")
         startActivity(resultIntent)
         finish()
     }

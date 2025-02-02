@@ -45,11 +45,10 @@ class MainActivity : AppCompatActivity() {
         val lastMessage = intent.getStringExtra("lastMessage")
         val lastMessageTimestamp = intent.getLongExtra("lastMessageTimestamp", 0)
         val userId = intent.getStringExtra("userId")
-        Log.d(TAG, "Received last message update -> User ID: $userId, Message: $lastMessage, Timestamp: $lastMessageTimestamp")
+        val recipientId = intent.getStringExtra("recipientId")
 
-        if (lastMessage != null && lastMessageTimestamp != 0L && userId != null) {
-            updateLastMessage(userId, lastMessage, lastMessageTimestamp)
-        }
+        Log.d(TAG, "Received last message update -> User ID: $userId, Message: $lastMessage, Timestamp: $lastMessageTimestamp, Recipient ID: $recipientId")
+
     }
 
     private fun initializeUI() {
@@ -61,9 +60,9 @@ class MainActivity : AppCompatActivity() {
         messageLast = ArrayList()
     }
 
-    private fun updateLastMessage(userId: String?, lastMessage: String, timestamp: Long) {
-        Log.d(TAG, "Updating last message for User ID: $userId, Message: $lastMessage, Timestamp: $timestamp")
-        userAdapter?.updateLastMessage(userId, lastMessage, timestamp)
+    private fun updateLastMessage(userId: String?, lastMessage: String, timestamp: Long, recipientId: String) {
+        Log.d(TAG, "Updating last message for User ID: $userId, Message: $lastMessage, Timestamp: $timestamp, Recipient ID: $recipientId")
+        userAdapter?.updateLastMessage(userId, lastMessage, timestamp, recipientId)
     }
 
     private fun setupRecyclerView() {
@@ -93,12 +92,40 @@ class MainActivity : AppCompatActivity() {
             .addOnSuccessListener { queryDocumentSnapshots ->
                 updateUserList(queryDocumentSnapshots)
 
+                Log.d(TAG, "User list updated with ${userList!!.size} users")
+
+                // ✅ Fetch messages after users are loaded
+                fetchLastMessages()
             }
             .addOnFailureListener { e ->
                 Log.e(TAG, "Error fetching users", e)
                 Toast.makeText(this, "Failed to load users", Toast.LENGTH_SHORT).show()
             }
     }
+    private fun fetchLastMessages() {
+        db!!.collection("Chats")
+            .get()
+            .addOnSuccessListener { queryDocumentSnapshots ->
+                messageLast!!.clear()
+                messageLast!!.addAll(queryDocumentSnapshots.toObjects(Message1::class.java))
+                Log.d(TAG, "Message list updated with ${messageLast!!.size} messages")
+
+                // ✅ Ensure updateLastMessage is only called after messages are loaded
+                val lastMessage = intent.getStringExtra("lastMessage")
+                val lastMessageTimestamp = intent.getLongExtra("lastMessageTimestamp", 0)
+                val userId = intent.getStringExtra("userId")
+                val recipientId = intent.getStringExtra("recipientId")
+
+                if (lastMessage != null && lastMessageTimestamp != 0L && userId != null && recipientId != null) {
+                    updateLastMessage(userId, lastMessage, lastMessageTimestamp, recipientId)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error fetching messages", e)
+            }
+    }
+
+
 
     private fun updateUserList(queryDocumentSnapshots: QuerySnapshot) {
         userList!!.clear()
